@@ -6,138 +6,118 @@
 <title>Call Analytics Dashboard</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Inter',sans-serif;
-}
-
-:root{
-    --bg:#050a18;
-    --text:#eef4ff;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+:root{--bg:#050a18;--text:#eef4ff;}
 
 body{
-    background:
-    radial-gradient(circle at 20% 25%, rgba(99,102,241,.18), transparent 45%),
-    radial-gradient(circle at 80% 70%, rgba(167,243,208,.10), transparent 55%),
-    var(--bg);
-
-    color:var(--text);
-    min-height:100vh;
-    padding:30px;
+background:
+radial-gradient(circle at 20% 25%, rgba(99,102,241,.18), transparent 45%),
+radial-gradient(circle at 80% 70%, rgba(56,189,248,.10), transparent 55%),
+var(--bg);
+color:var(--text);
+min-height:100vh;
+padding:30px;
 }
 
-.container{
-    max-width:1400px;
-    margin:auto;
-}
-
-h1{
-    font-size:2rem;
-    margin-bottom:25px;
-}
+.container{max-width:1400px;margin:auto;}
+h1{font-size:2rem;margin-bottom:25px;}
 
 .toolbar{
-    display:flex;
-    gap:10px;
-    margin-bottom:15px;
-    flex-wrap:wrap;
+display:flex;
+gap:10px;
+margin-bottom:15px;
+flex-wrap:wrap;
 }
 
 button{
-    border:none;
-    cursor:pointer;
-    border-radius:14px;
-    transition:.2s ease;
+border:none;
+cursor:pointer;
+border-radius:14px;
+transition:.2s ease;
 }
 
 .primary-btn{
-    background:linear-gradient(135deg,
-        rgba(99,102,241,.25),
-        rgba(129,140,248,.18)
-    );
-    color:white;
-    padding:12px 16px;
-    font-weight:600;
+background:linear-gradient(135deg,rgba(99,102,241,.25),rgba(56,189,248,.20));
+color:white;
+padding:12px 16px;
+font-weight:600;
 }
 
+.primary-btn:hover{transform:translateY(-2px);}
+
 .total-card{
-    margin-bottom:20px;
-    padding:16px 20px;
-    border-radius:18px;
-    border:1px solid rgba(167,243,208,.35);
-    background:rgba(167,243,208,.08);
-    display:flex;
-    justify-content:space-between;
+margin-bottom:20px;
+padding:16px 20px;
+border-radius:18px;
+border:1px solid rgba(167,243,208,.35);
+background:rgba(167,243,208,.08);
+display:flex;
+justify-content:space-between;
 }
 
 .total-value{
-    font-size:1.6rem;
-    font-weight:700;
-    color:rgba(167,243,208,.95);
+font-size:1.6rem;
+font-weight:700;
+color:rgba(167,243,208,.95);
 }
 
 .categories{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:15px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:15px;
 }
 
 .category-card{
-    padding:20px;
-    border-radius:24px;
-    border:1px solid rgba(255,255,255,.10);
+padding:20px;
+border-radius:24px;
+border:1px solid rgba(255,255,255,.10);
+background:rgba(255,255,255,.03);
 }
 
-.category-name{
-    font-size:1.1rem;
-    font-weight:600;
-}
-
-.category-count{
-    font-size:2rem;
-    font-weight:700;
-    margin:12px 0;
-}
+.category-name{font-size:1.1rem;font-weight:600;}
+.category-count{font-size:2rem;font-weight:700;margin:12px 0;}
 
 .bar{
-    height:6px;
-    width:100%;
-    background:rgba(255,255,255,.06);
-    border-radius:20px;
-    overflow:hidden;
-    margin-bottom:12px;
+height:6px;
+width:100%;
+background:rgba(255,255,255,.06);
+border-radius:20px;
+overflow:hidden;
+margin-bottom:12px;
 }
 
-.bar-fill{
-    height:100%;
-    border-radius:20px;
-}
+.bar-fill{height:100%;border-radius:20px;}
 
 .actions{
-    display:flex;
-    gap:8px;
+display:flex;
+gap:8px;
 }
 
 .icon-btn{
-    flex:1;
-    padding:10px;
-    border-radius:12px;
-    cursor:pointer;
-    color:white;
-    background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.10);
+flex:1;
+padding:10px;
+border-radius:12px;
+color:white;
+background:rgba(255,255,255,.08);
+border:1px solid rgba(255,255,255,.10);
 }
 
-.add{ background:rgba(99,102,241,.20); }
-.sub{ background:rgba(56,189,248,.15); }
+.add{background:rgba(99,102,241,.20);}
+.sub{background:rgba(56,189,248,.15);}
+
+#reportCard{
+position:absolute;
+left:-9999px;
+width:1000px;
+padding:40px;
+background:#08101f;
+color:white;
+}
 </style>
 </head>
-
 <body>
 
 <div class="container">
@@ -145,180 +125,166 @@ button{
 <h1>📞 Call Analytics Dashboard</h1>
 
 <div class="toolbar">
-    <button class="primary-btn" onclick="exportCSV()">📊 Export CSV</button>
-    <button class="primary-btn" onclick="clearAll()">🧹 Clear All</button>
+<button class="primary-btn" onclick="exportReport()">📸 Export Report</button>
+<button class="primary-btn" onclick="clearAll()">🧹 Clear All</button>
 </div>
 
 <div class="total-card">
-    <div>Total Calls</div>
-    <div class="total-value" id="totalValue">0</div>
+<div>Total Calls</div>
+<div class="total-value" id="totalValue">0</div>
 </div>
 
 <div class="categories" id="categories"></div>
 
 </div>
 
+<div id="reportCard">
+<h1>📞 Call Analytics Report</h1>
+
+<div style="font-size:24px;margin:20px 0;">
+Total Calls: <span id="reportTotal"></span>
+</div>
+
+<div id="reportRows"></div>
+
+<div style="margin-top:30px;font-size:22px;">
+🏆 Top Category: <span id="topCategory"></span>
+</div>
+
+<div style="margin-top:25px;opacity:.7;">
+Generated: <span id="reportDate"></span>
+</div>
+</div>
+
 <script>
+let data={
+categories:[
+{name:"Complains",count:0},
+{name:"Cancelations/Books off",count:0},
+{name:"NSNF",count:0},
+{name:"Schedule",count:0},
+{name:"OHAH",count:0},
+{name:"Reschedule",count:0},
+{name:"Other",count:0},
+{name:"Vacant visits",count:0},
+{name:"Staff Late/No show up",count:0}
+]};
 
-/* =========================
-   CATEGORÍAS FIJAS
-========================= */
-let data = {
-    categories: [
-        {name:"Complains", count:0},
-        {name:"Cancelations/Books off", count:0},
-        {name:"NSNF", count:0},
-        {name:"Schedule", count:0},
-        {name:"OHAH", count:0},
-        {name:"Reschedule", count:0},
-        {name:"Other", count:0},
-        {name:"Vacant visits", count:0},
-        {name:"Staff Late/No show up", count:0}
-    ]
-};
-
-/* =========================
-   PERSISTENCIA
-========================= */
 function save(){
-    localStorage.setItem("callDashboardFixed", JSON.stringify(data));
+localStorage.setItem("callDashboardFixed",JSON.stringify(data));
 }
 
 function load(){
-    const saved = JSON.parse(localStorage.getItem("callDashboardFixed"));
-
-    if(saved){
-        data.categories.forEach((cat,i)=>{
-            if(saved.categories?.[i]){
-                cat.count = saved.categories[i].count || 0;
-            }
-        });
-    }
+const saved=JSON.parse(localStorage.getItem("callDashboardFixed"));
+if(saved){
+data.categories.forEach((cat,i)=>{
+if(saved.categories?.[i]) cat.count=saved.categories[i].count||0;
+});
+}
 }
 
-/* =========================
-   COLORES DINÁMICOS
-========================= */
 function getColor(count){
-
-    let r,g,b;
-
-    if(count <= 5){
-        let t = count/5;
-        r = 99 + (120-99)*t;
-        g = 102 + (180-102)*t;
-        b = 241;
-    }
-    else if(count <= 15){
-        let t = (count-5)/10;
-        r = 120 + (56-120)*t;
-        g = 180 + (189-180)*t;
-        b = 241;
-    }
-    else{
-        let t = Math.min((count-15)/15,1);
-        r = 56 + (239-56)*t;
-        g = 189 + (68-189)*t;
-        b = 241 - (241-200)*t;
-    }
-
-    return `rgba(${r},${g},${b},.75)`;
+let r,g,b;
+if(count<=5){
+let t=count/5;
+r=99+(120-99)*t;
+g=102+(180-102)*t;
+b=241;
+}else if(count<=15){
+let t=(count-5)/10;
+r=120+(56-120)*t;
+g=180+(189-180)*t;
+b=241;
+}else{
+let t=Math.min((count-15)/15,1);
+r=56+(239-56)*t;
+g=189+(68-189)*t;
+b=241-(241-200)*t;
+}
+return `rgba(${r},${g},${b},.85)`;
 }
 
-/* =========================
-   RENDER
-========================= */
 function render(){
+const container=document.getElementById("categories");
+container.innerHTML="";
 
-    const container = document.getElementById("categories");
-    container.innerHTML = "";
+let total=data.categories.reduce((s,c)=>s+c.count,0);
+document.getElementById("totalValue").textContent=total;
 
-    let total = data.categories.reduce((s,c)=>s+c.count,0);
-    document.getElementById("totalValue").textContent = total;
+let max=Math.max(...data.categories.map(c=>c.count),1);
 
-    let max = Math.max(...data.categories.map(c=>c.count),1);
+data.categories.forEach((cat,i)=>{
+let color=getColor(cat.count);
+let percent=(cat.count/max)*100;
 
-    data.categories.forEach((cat,i)=>{
-
-        let color = getColor(cat.count);
-        let percent = (cat.count/max)*100;
-
-        container.innerHTML += `
-        <div class="category-card" style="border-color:${color}">
-
-            <div class="category-name">${cat.name}</div>
-
-            <div class="category-count" style="color:${color}">
-                ${cat.count}
-            </div>
-
-            <div class="bar">
-                <div class="bar-fill"
-                    style="width:${percent}%; background:${color}">
-                </div>
-            </div>
-
-            <div class="actions">
-                <button class="icon-btn add" onclick="addCall(${i})">+</button>
-                <button class="icon-btn sub" onclick="subCall(${i})">−</button>
-            </div>
-
-        </div>`;
-    });
+container.innerHTML+=`
+<div class="category-card" style="border-color:${color}">
+<div class="category-name">${cat.name}</div>
+<div class="category-count" style="color:${color}">${cat.count}</div>
+<div class="bar">
+<div class="bar-fill" style="width:${percent}%;background:${color}"></div>
+</div>
+<div class="actions">
+<button class="icon-btn add" onclick="addCall(${i})">+</button>
+<button class="icon-btn sub" onclick="subCall(${i})">−</button>
+</div>
+</div>`;
+});
 }
 
-/* =========================
-   ACCIONES
-========================= */
-function addCall(i){
-    data.categories[i].count++;
-    save();
-    render();
-}
-
-function subCall(i){
-    if(data.categories[i].count > 0){
-        data.categories[i].count--;
-        save();
-        render();
-    }
-}
+function addCall(i){data.categories[i].count++;save();render();}
+function subCall(i){if(data.categories[i].count>0){data.categories[i].count--;save();render();}}
 
 function clearAll(){
-    if(!confirm("Clear ALL calls?")) return;
-    data.categories.forEach(c=>c.count=0);
-    save();
-    render();
+if(!confirm("Clear ALL calls?")) return;
+data.categories.forEach(c=>c.count=0);
+save();
+render();
 }
 
-/* =========================
-   EXPORT CSV
-========================= */
-function exportCSV(){
-    let csv = "Category,Calls\n";
+function exportReport(){
+const total=data.categories.reduce((s,c)=>s+c.count,0);
+document.getElementById("reportTotal").textContent=total;
+document.getElementById("reportDate").textContent=new Date().toLocaleString();
 
-    data.categories.forEach(c=>{
-        csv += `"${c.name}",${c.count}\n`;
-    });
+let top=data.categories.reduce((a,b)=>a.count>b.count?a:b);
+document.getElementById("topCategory").textContent=`${top.name} (${top.count})`;
 
-    const blob = new Blob([csv],{type:"text/csv"});
-    const url = URL.createObjectURL(blob);
+let rows="";
+let max=Math.max(...data.categories.map(c=>c.count),1);
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "call-report.csv";
-    a.click();
+data.categories.forEach(cat=>{
+let percent=(cat.count/max)*100;
+let color=getColor(cat.count);
 
-    URL.revokeObjectURL(url);
+rows+=`
+<div style="margin-bottom:18px;">
+<div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+<span>${cat.name}</span>
+<span>${cat.count}</span>
+</div>
+<div style="height:18px;background:#13203b;border-radius:30px;overflow:hidden;">
+<div style="height:100%;width:${percent}%;background:${color};"></div>
+</div>
+</div>`;
+});
+
+document.getElementById("reportRows").innerHTML=rows;
+
+html2canvas(document.getElementById("reportCard"),{
+backgroundColor:"#08101f",
+scale:2
+}).then(canvas=>{
+const link=document.createElement("a");
+const today=new Date().toISOString().split("T")[0];
+link.download=`Call-Report-${today}.png`;
+link.href=canvas.toDataURL("image/png");
+link.click();
+});
 }
 
-/* =========================
-   INIT
-========================= */
 load();
 render();
-
 </script>
-
 </body>
 </html>

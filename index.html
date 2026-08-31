@@ -3,288 +3,145 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Call Analytics Dashboard</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-
+<title>Daily Call Goal</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
-:root{--bg:#050a18;--text:#eef4ff;}
-
-body{
-background:
-radial-gradient(circle at 20% 25%, rgba(99,102,241,.18), transparent 45%),
-radial-gradient(circle at 80% 70%, rgba(56,189,248,.10), transparent 55%),
-var(--bg);
-color:var(--text);
-min-height:100vh;
-padding:30px;
-}
-
-.container{max-width:1400px;margin:auto;}
-h1{font-size:2rem;margin-bottom:25px;}
-
-.toolbar{
-display:flex;
-gap:10px;
-margin-bottom:15px;
-flex-wrap:wrap;
-}
-
-button{
-border:none;
-cursor:pointer;
-border-radius:14px;
-transition:.2s ease;
-}
-
-.primary-btn{
-background:linear-gradient(135deg,rgba(99,102,241,.25),rgba(56,189,248,.20));
-color:white;
-padding:12px 16px;
-font-weight:600;
-}
-
-.primary-btn:hover{transform:translateY(-2px);}
-
-.total-card{
-margin-bottom:20px;
-padding:16px 20px;
-border-radius:18px;
-border:1px solid rgba(167,243,208,.35);
-background:rgba(167,243,208,.08);
-display:flex;
-justify-content:space-between;
-}
-
-.total-value{
-font-size:1.6rem;
-font-weight:700;
-color:rgba(167,243,208,.95);
-}
-
-.categories{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-gap:15px;
-}
-
-.category-card{
-padding:20px;
-border-radius:24px;
-border:1px solid rgba(255,255,255,.10);
-background:rgba(255,255,255,.03);
-}
-
-.category-name{font-size:1.1rem;font-weight:600;}
-.category-count{font-size:2rem;font-weight:700;margin:12px 0;}
-
-.bar{
-height:6px;
-width:100%;
-background:rgba(255,255,255,.06);
-border-radius:20px;
-overflow:hidden;
-margin-bottom:12px;
-}
-
-.bar-fill{height:100%;border-radius:20px;}
-
-.actions{
-display:flex;
-gap:8px;
-}
-
-.icon-btn{
-flex:1;
-padding:10px;
-border-radius:12px;
-color:white;
-background:rgba(255,255,255,.08);
-border:1px solid rgba(255,255,255,.10);
-}
-
-.add{background:rgba(99,102,241,.20);}
-.sub{background:rgba(56,189,248,.15);}
-
-#reportCard{
-position:absolute;
-left:-9999px;
-width:1000px;
-padding:40px;
-background:#08101f;
-color:white;
-}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,sans-serif}
+:root{--bg:#050a18;--text:#eef4ff;--muted:#91a0bd;--accent:#6366f1;--accent2:#38bdf8;--goal:#a7f3d0}
+body{min-height:100vh;padding:28px;background:radial-gradient(circle at 20% 20%,rgba(99,102,241,.20),transparent 42%),radial-gradient(circle at 80% 75%,rgba(56,189,248,.12),transparent 48%),var(--bg);color:var(--text);display:grid;place-items:center}
+.dashboard{width:min(940px,100%)}
+.header{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:20px}
+.eyebrow{color:var(--accent2);font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:7px}
+h1{font-size:clamp(1.65rem,4vw,2.4rem)}
+.date{color:var(--muted);font-size:.9rem}
+.panel{position:relative;overflow:hidden;display:grid;grid-template-columns:220px 1fr;gap:34px;padding:32px;border:1px solid rgba(255,255,255,.11);border-radius:30px;background:rgba(255,255,255,.045);box-shadow:0 22px 60px rgba(0,0,0,.25);backdrop-filter:blur(16px)}
+.thermometer-wrap{display:flex;justify-content:center;align-items:center;min-height:430px}
+.thermometer{position:relative;width:92px;height:360px}
+.tube{position:absolute;left:22px;top:0;width:48px;height:300px;border:4px solid rgba(255,255,255,.22);border-bottom:0;border-radius:28px 28px 0 0;background:rgba(255,255,255,.035);overflow:hidden}
+.mercury{position:absolute;left:6px;right:6px;bottom:0;height:0;border-radius:18px 18px 0 0;background:linear-gradient(to top,var(--fill1),var(--fill2));transition:height .6s cubic-bezier(.2,.8,.2,1),background .4s}
+.bulb{position:absolute;left:7px;bottom:0;width:78px;height:78px;border:4px solid rgba(255,255,255,.22);border-radius:50%;background:var(--fill1);box-shadow:0 0 36px color-mix(in srgb,var(--fill1) 42%,transparent);transition:.4s}
+.bulb:after{content:"";position:absolute;width:24px;height:55px;left:23px;top:-32px;background:var(--fill1)}
+.goal-mark{position:absolute;left:75px;top:-7px;color:var(--goal);font-size:.78rem;font-weight:800;white-space:nowrap}
+.scale{position:absolute;right:78px;top:4px;height:292px;display:flex;flex-direction:column;justify-content:space-between;color:var(--muted);font-size:.7rem;text-align:right}
+.content{display:flex;flex-direction:column;justify-content:center}
+.status-pill{align-self:flex-start;padding:8px 12px;border:1px solid color-mix(in srgb,var(--fill1) 55%,transparent);border-radius:999px;background:color-mix(in srgb,var(--fill1) 14%,transparent);color:var(--fill2);font-size:.8rem;font-weight:700;margin-bottom:20px;transition:.4s}
+.count-row{display:flex;align-items:baseline;gap:10px}
+.count{font-size:clamp(5rem,14vw,8rem);font-weight:800;letter-spacing:-.08em;line-height:.88;color:var(--fill2);transition:.35s}
+.target{color:var(--muted);font-size:1.25rem;font-weight:600}
+.message{font-size:1.15rem;font-weight:600;margin-top:18px}
+.remaining{color:var(--muted);font-size:.9rem;margin-top:7px}
+.progress-track{height:12px;margin:26px 0 10px;border-radius:20px;background:rgba(255,255,255,.07);overflow:hidden}
+.progress-fill{height:100%;width:0;border-radius:20px;background:linear-gradient(90deg,var(--fill1),var(--fill2));transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.progress-labels{display:flex;justify-content:space-between;color:var(--muted);font-size:.78rem}
+.actions{display:grid;grid-template-columns:1fr 1.65fr;gap:12px;margin-top:30px}
+button{border:1px solid rgba(255,255,255,.11);border-radius:18px;padding:17px;color:white;font-size:1rem;font-weight:750;cursor:pointer;transition:.18s;background:rgba(255,255,255,.07)}
+button:hover{transform:translateY(-2px);filter:brightness(1.12)}
+button:active{transform:scale(.98)}
+.add{background:linear-gradient(135deg,color-mix(in srgb,var(--fill1) 65%,#11182c),color-mix(in srgb,var(--fill2) 48%,#11182c));font-size:1.08rem}
+.footer{display:flex;justify-content:space-between;align-items:center;margin-top:14px;color:var(--muted);font-size:.76rem}
+.reset{padding:7px 10px;border:0;background:transparent;color:var(--muted);font-size:.76rem}
+.celebration{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+.confetti{position:absolute;top:-15px;width:9px;height:15px;border-radius:2px;animation:fall 2.3s linear forwards}
+@keyframes fall{to{transform:translate3d(var(--drift),105vh,0) rotate(760deg);opacity:.15}}
+@media(max-width:680px){body{padding:18px}.header{align-items:start;flex-direction:column}.panel{grid-template-columns:1fr;padding:24px;gap:12px}.thermometer-wrap{min-height:300px}.thermometer{transform:scale(.78);height:300px}.content{text-align:center}.status-pill{align-self:center}.count-row{justify-content:center}.actions{grid-template-columns:1fr 1.5fr}}
 </style>
 </head>
 <body>
-
-<div class="container">
-
-<h1>📞 Call Analytics Dashboard</h1>
-
-<div class="toolbar">
-<button class="primary-btn" onclick="exportReport()">📸 Export Report</button>
-<button class="primary-btn" onclick="clearAll()">🧹 Clear All</button>
-</div>
-
-<div class="total-card">
-<div>Total Calls</div>
-<div class="total-value" id="totalValue">0</div>
-</div>
-
-<div class="categories" id="categories"></div>
-
-</div>
-
-<div id="reportCard">
-<h1>📞 Call Analytics Report</h1>
-
-<div style="font-size:24px;margin:20px 0;">
-Total Calls: <span id="reportTotal"></span>
-</div>
-
-<div id="reportRows"></div>
-
-<div style="margin-top:30px;font-size:22px;">
-🏆 Top Category: <span id="topCategory"></span>
-</div>
-
-<div style="margin-top:25px;opacity:.7;">
-Generated: <span id="reportDate"></span>
-</div>
-</div>
-
+<main class="dashboard" id="dashboard">
+  <header class="header">
+    <div><div class="eyebrow">Daily performance</div><h1>📞 Call Goal</h1></div>
+    <div class="date" id="dateLabel"></div>
+  </header>
+  <section class="panel" id="panel">
+    <div class="thermometer-wrap">
+      <div class="thermometer">
+        <div class="scale"><span>90</span><span>68</span><span>45</span><span>23</span><span>0</span></div>
+        <div class="tube"><div class="mercury" id="mercury"></div></div>
+        <div class="bulb"></div><div class="goal-mark">GOAL 90</div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="status-pill" id="statusPill">Ready to start</div>
+      <div class="count-row"><div class="count" id="count">0</div><div class="target">/ 90 calls</div></div>
+      <div class="message" id="message">Let's get the first call!</div>
+      <div class="remaining" id="remaining">90 calls remaining</div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-labels"><span id="percent">0% complete</span><span id="pace">Starting line</span></div>
+      <div class="actions">
+        <button onclick="changeCount(-1)" aria-label="Remove one call">− Remove</button>
+        <button class="add" onclick="changeCount(1)">＋ Add Call</button>
+      </div>
+    </div>
+  </section>
+  <div class="footer"><span>Progress saves automatically and resets on a new day.</span><button class="reset" onclick="resetCount()">Reset today</button></div>
+</main>
+<div class="celebration" id="celebration"></div>
 <script>
-let data={
-categories:[
-{name:"Complains",count:0},
-{name:"Cancelations/Books off",count:0},
-{name:"NSNF",count:0},
-{name:"Schedule",count:0},
-{name:"OHAH",count:0},
-{name:"Reschedule",count:0},
-{name:"Other",count:0},
-{name:"Vacant visits",count:0},
-{name:"Staff Late/No show up",count:0}
-]};
-
-function save(){
-localStorage.setItem("callDashboardFixed",JSON.stringify(data));
-}
+const GOAL=90;
+const STORAGE_KEY="dailyCallGoal90";
+const today=()=>new Date().toLocaleDateString("en-CA");
+let state={date:today(),count:0,celebrated:false};
 
 function load(){
-const saved=JSON.parse(localStorage.getItem("callDashboardFixed"));
-if(saved){
-data.categories.forEach((cat,i)=>{
-if(saved.categories?.[i]) cat.count=saved.categories[i].count||0;
-});
+  try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY));if(saved?.date===today())state={...state,...saved};}
+  catch(error){console.warn("Saved progress could not be loaded.",error);}
 }
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}
+function palette(percent){
+  if(percent>=100)return["#10b981","#a7f3d0"];
+  if(percent>=75)return["#22c55e","#86efac"];
+  if(percent>=50)return["#06b6d4","#67e8f9"];
+  if(percent>=25)return["#6366f1","#60a5fa"];
+  return["#7c3aed","#818cf8"];
 }
-
-function getColor(count){
-let r,g,b;
-if(count<=5){
-let t=count/5;
-r=99+(120-99)*t;
-g=102+(180-102)*t;
-b=241;
-}else if(count<=15){
-let t=(count-5)/10;
-r=120+(56-120)*t;
-g=180+(189-180)*t;
-b=241;
-}else{
-let t=Math.min((count-15)/15,1);
-r=56+(239-56)*t;
-g=189+(68-189)*t;
-b=241-(241-200)*t;
+function copyFor(count,percent){
+  if(percent>=100)return["Goal reached! 🏆",`${count-GOAL} calls above goal`,"Daily goal complete"];
+  if(percent>=90)return["Final push — almost there! 🔥",`${GOAL-count} calls remaining`,"Almost there"];
+  if(percent>=75)return["Great momentum! ⚡",`${GOAL-count} calls remaining`,"Strong progress"];
+  if(percent>=50)return["Halfway and moving! 🚀",`${GOAL-count} calls remaining`,"On the way"];
+  if(percent>=25)return["Good start — keep it going! 📈",`${GOAL-count} calls remaining`,"Building momentum"];
+  if(count>0)return["Every call moves the goal! 🎯",`${GOAL-count} calls remaining`,"Getting started"];
+  return["Let's get the first call!",`${GOAL} calls remaining`,"Ready to start"];
 }
-return `rgba(${r},${g},${b},.85)`;
-}
-
 function render(){
-const container=document.getElementById("categories");
-container.innerHTML="";
-
-let total=data.categories.reduce((s,c)=>s+c.count,0);
-document.getElementById("totalValue").textContent=total;
-
-let max=Math.max(...data.categories.map(c=>c.count),1);
-
-data.categories.forEach((cat,i)=>{
-let color=getColor(cat.count);
-let percent=(cat.count/max)*100;
-
-container.innerHTML+=`
-<div class="category-card" style="border-color:${color}">
-<div class="category-name">${cat.name}</div>
-<div class="category-count" style="color:${color}">${cat.count}</div>
-<div class="bar">
-<div class="bar-fill" style="width:${percent}%;background:${color}"></div>
-</div>
-<div class="actions">
-<button class="icon-btn add" onclick="addCall(${i})">+</button>
-<button class="icon-btn sub" onclick="subCall(${i})">−</button>
-</div>
-</div>`;
-});
+  const rawPercent=(state.count/GOAL)*100;
+  const visualPercent=Math.min(rawPercent,100);
+  const [fill1,fill2]=palette(rawPercent);
+  document.documentElement.style.setProperty("--fill1",fill1);
+  document.documentElement.style.setProperty("--fill2",fill2);
+  document.getElementById("count").textContent=state.count;
+  document.getElementById("mercury").style.height=`${visualPercent}%`;
+  document.getElementById("progressFill").style.width=`${visualPercent}%`;
+  document.getElementById("percent").textContent=`${Math.round(rawPercent)}% complete`;
+  document.getElementById("pace").textContent=rawPercent>=100?"Goal achieved":rawPercent>=75?"Final stretch":rawPercent>=50?"Past halfway":rawPercent>=25?"Gaining pace":"Starting line";
+  const [message,remaining,status]=copyFor(state.count,rawPercent);
+  document.getElementById("message").textContent=message;
+  document.getElementById("remaining").textContent=remaining;
+  document.getElementById("statusPill").textContent=status;
+  document.getElementById("dateLabel").textContent=new Date().toLocaleDateString("en-CA",{weekday:"long",month:"long",day:"numeric"});
 }
-
-function addCall(i){data.categories[i].count++;save();render();}
-function subCall(i){if(data.categories[i].count>0){data.categories[i].count--;save();render();}}
-
-function clearAll(){
-if(!confirm("Clear ALL calls?")) return;
-data.categories.forEach(c=>c.count=0);
-save();
-render();
+function changeCount(amount){
+  const before=state.count;
+  state.count=Math.max(0,state.count+amount);
+  if(before<GOAL&&state.count>=GOAL&&!state.celebrated){celebrate();state.celebrated=true;}
+  if(state.count<GOAL)state.celebrated=false;
+  save();render();
 }
-
-function exportReport(){
-const total=data.categories.reduce((s,c)=>s+c.count,0);
-document.getElementById("reportTotal").textContent=total;
-document.getElementById("reportDate").textContent=new Date().toLocaleString();
-
-let top=data.categories.reduce((a,b)=>a.count>b.count?a:b);
-document.getElementById("topCategory").textContent=`${top.name} (${top.count})`;
-
-let rows="";
-let max=Math.max(...data.categories.map(c=>c.count),1);
-
-data.categories.forEach(cat=>{
-let percent=(cat.count/max)*100;
-let color=getColor(cat.count);
-
-rows+=`
-<div style="margin-bottom:18px;">
-<div style="display:flex;justify-content:space-between;margin-bottom:6px;">
-<span>${cat.name}</span>
-<span>${cat.count}</span>
-</div>
-<div style="height:18px;background:#13203b;border-radius:30px;overflow:hidden;">
-<div style="height:100%;width:${percent}%;background:${color};"></div>
-</div>
-</div>`;
-});
-
-document.getElementById("reportRows").innerHTML=rows;
-
-html2canvas(document.getElementById("reportCard"),{
-backgroundColor:"#08101f",
-scale:2
-}).then(canvas=>{
-const link=document.createElement("a");
-const today=new Date().toISOString().split("T")[0];
-link.download=`Call-Report-${today}.png`;
-link.href=canvas.toDataURL("image/png");
-link.click();
-});
+function resetCount(){
+  if(!confirm("Reset today's call count to zero?"))return;
+  state={date:today(),count:0,celebrated:false};save();render();
 }
-
-load();
-render();
+function celebrate(){
+  const box=document.getElementById("celebration");
+  const colors=["#a7f3d0","#38bdf8","#818cf8","#fbbf24","#f472b6"];
+  for(let i=0;i<80;i++){
+    const piece=document.createElement("span");piece.className="confetti";
+    piece.style.left=`${Math.random()*100}%`;piece.style.background=colors[i%colors.length];
+    piece.style.animationDelay=`${Math.random()*.6}s`;piece.style.setProperty("--drift",`${(Math.random()-.5)*240}px`);
+    box.appendChild(piece);setTimeout(()=>piece.remove(),3200);
+  }
+}
+load();render();
 </script>
 </body>
 </html>

@@ -9,6 +9,10 @@
 *{box-sizing:border-box;margin:0;padding:0;font-family:Inter,sans-serif}
 :root{--bg:#050a18;--text:#eef4ff;--muted:#91a0bd;--accent:#6366f1;--accent2:#38bdf8;--goal:#a7f3d0}
 body{min-height:100vh;padding:28px;background:radial-gradient(circle at 20% 20%,rgba(99,102,241,.20),transparent 42%),radial-gradient(circle at 80% 75%,rgba(56,189,248,.12),transparent 48%),var(--bg);color:var(--text);display:grid;place-items:center}
+.launcher{display:none;width:min(440px,100%);padding:38px;text-align:center;border:1px solid rgba(255,255,255,.12);border-radius:30px;background:rgba(255,255,255,.05);box-shadow:0 25px 70px rgba(0,0,0,.35);backdrop-filter:blur(18px)}
+.launcher-icon{width:92px;height:92px;margin:0 auto 20px;display:grid;place-items:center;border-radius:28px;background:linear-gradient(145deg,rgba(99,102,241,.5),rgba(56,189,248,.25));font-size:2.6rem;border:1px solid rgba(255,255,255,.15)}
+.launcher h1{margin-bottom:10px}.launcher p{color:var(--muted);line-height:1.55;margin-bottom:25px}.launch-btn{width:100%;background:linear-gradient(135deg,#6366f1,#0ea5e9);padding:16px}
+body.launcher-mode .launcher{display:block}body.launcher-mode .dashboard{display:none}
 .dashboard{width:min(940px,100%)}
 .header{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:20px}
 .eyebrow{color:var(--accent2);font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:7px}
@@ -52,14 +56,34 @@ button:hover{transform:translateY(-2px);filter:brightness(1.12)}
 button:active{transform:scale(.98)}
 .add{background:linear-gradient(135deg,color-mix(in srgb,var(--fill1) 65%,#11182c),color-mix(in srgb,var(--fill2) 48%,#11182c));font-size:1.08rem}
 .footer{display:flex;justify-content:space-between;align-items:center;margin-top:14px;color:var(--muted);font-size:.76rem}
+.key-hint{display:none}
 .reset{padding:7px 10px;border:0;background:transparent;color:var(--muted);font-size:.76rem}
 .celebration{position:fixed;inset:0;pointer-events:none;overflow:hidden}
 .confetti{position:absolute;top:-15px;width:9px;height:15px;border-radius:2px;animation:fall 2.3s linear forwards}
 @keyframes fall{to{transform:translate3d(var(--drift),105vh,0) rotate(760deg);opacity:.15}}
 @media(max-width:680px){body{padding:18px}.header{align-items:start;flex-direction:column}.panel{grid-template-columns:1fr;padding:24px;gap:4px}.thermometer-wrap{min-height:260px}.thermometer{transform:scale(.68);height:285px}.content{text-align:center}.visual-count{margin-inline:auto;width:210px;height:210px}.status-pill{align-self:center}.actions{grid-template-columns:1fr 1.5fr}.milestone{font-size:.6rem}}
+body.widget{padding:12px;display:block;overflow-x:hidden}
+body.widget .dashboard{width:100%}body.widget .header{align-items:center;margin-bottom:10px;padding:0 3px}
+body.widget .eyebrow,body.widget .date{font-size:.62rem}body.widget h1{font-size:1.12rem}
+body.widget .panel{display:block;padding:18px;border-radius:24px;min-height:0}body.widget .thermometer-wrap{display:none}
+body.widget .content{text-align:center;align-items:center}body.widget .status-pill{align-self:center;margin-bottom:10px;padding:6px 10px;font-size:.7rem}
+body.widget .visual-count{width:185px;height:185px;margin:0 auto 8px}body.widget .count{font-size:4rem}
+body.widget .message{font-size:.92rem;margin-top:7px}body.widget .remaining{font-size:.75rem;margin-top:4px}
+body.widget .progress-track{width:100%;margin:15px 0 7px;height:8px}body.widget .progress-labels{width:100%;font-size:.65rem}
+body.widget .milestones{width:100%;margin-top:15px;gap:3px}body.widget .milestone-dot{width:29px;height:29px;font-size:.58rem;margin-bottom:4px}
+body.widget .milestone{font-size:.55rem}body.widget .milestones:before{top:14px}
+body.widget .actions{display:none}body.widget .key-hint{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:18px;padding:11px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(255,255,255,.045);font-size:.7rem;color:var(--muted)}
+body.widget .key-hint kbd{padding:5px 12px;border-radius:8px;color:#fff;background:linear-gradient(135deg,var(--fill1),var(--fill2));font-weight:800;box-shadow:0 3px 0 rgba(0,0,0,.35)}body.widget button{padding:12px;border-radius:14px;font-size:.78rem}
+body.widget .footer{margin-top:8px;font-size:.58rem;gap:5px}body.widget .footer>span:after{content:" · Enter adds a call"}body.widget .reset{padding:5px;font-size:.58rem}
 </style>
 </head>
 <body>
+<section class="launcher" id="launcher">
+  <div class="launcher-icon">📞</div>
+  <h1>Call Goal Gadget</h1>
+  <p>Open the compact counter and keep it in a corner of your screen. Press <strong>Enter</strong> for every call.</p>
+  <button class="launch-btn" onclick="openGadget()">Open Call Gadget</button>
+</section>
 <main class="dashboard" id="dashboard">
   <header class="header">
     <div><div class="eyebrow">Daily performance</div><h1>📞 Call Goal</h1></div>
@@ -98,6 +122,7 @@ button:active{transform:scale(.98)}
         <button onclick="changeCount(-1)" aria-label="Remove one call">− Remove</button>
         <button class="add" onclick="changeCount(1,event)">＋ Add Call</button>
       </div>
+      <div class="key-hint"><kbd>ENTER ↵</kbd><span>Add call</span><span>·</span><kbd>⌫</kbd><span>Undo</span></div>
     </div>
   </section>
   <div class="footer"><span>Progress saves automatically and resets on a new day.</span><button class="reset" onclick="resetCount()">Reset today</button></div>
@@ -106,6 +131,7 @@ button:active{transform:scale(.98)}
 <script>
 const GOAL=90;
 const STORAGE_KEY="dailyCallGoal90";
+const isWidget=new URLSearchParams(location.search).get("widget")==="1";
 const today=()=>new Date().toLocaleDateString("en-CA");
 let state={date:today(),count:0,celebrated:false};
 
@@ -114,6 +140,11 @@ function load(){
   catch(error){console.warn("Saved progress could not be loaded.",error);}
 }
 function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}
+function openGadget(){
+  const url=new URL(location.href);url.searchParams.set("widget","1");
+  const popup=window.open(url.href,"callGoalGadget","popup=yes,width=390,height=650,resizable=yes,scrollbars=no");
+  if(!popup)alert("Please allow pop-ups to open the Call Goal Gadget.");
+}
 function palette(percent){
   if(percent>=100)return["#10b981","#a7f3d0"];
   if(percent>=75)return["#22c55e","#86efac"];
@@ -150,6 +181,7 @@ function render(){
   document.getElementById("statusPill").textContent=status;
   document.querySelectorAll(".milestone").forEach(item=>item.classList.toggle("done",state.count>=Number(item.dataset.at)));
   document.getElementById("dateLabel").textContent=new Date().toLocaleDateString("en-CA",{weekday:"long",month:"long",day:"numeric"});
+  if(isWidget)document.title=`Calls · ${state.count}/${GOAL}`;
 }
 function changeCount(amount,event){
   const before=state.count;
@@ -175,6 +207,15 @@ function celebrate(){
     box.appendChild(piece);setTimeout(()=>piece.remove(),3200);
   }
 }
+if(isWidget){
+  document.body.classList.add("widget");
+  window.addEventListener("keydown",event=>{
+    if(event.repeat)return;
+    if(event.key==="Enter"){event.preventDefault();changeCount(1,event);}
+    if(event.key==="Backspace"){event.preventDefault();changeCount(-1,event);}
+  });
+  window.addEventListener("storage",event=>{if(event.key===STORAGE_KEY){load();render();}});
+}else document.body.classList.add("launcher-mode");
 load();render();
 </script>
 </body>

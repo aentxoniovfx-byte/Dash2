@@ -24,15 +24,28 @@ h1{font-size:clamp(1.65rem,4vw,2.4rem)}
 .goal-mark{position:absolute;left:75px;top:-7px;color:var(--goal);font-size:.78rem;font-weight:800;white-space:nowrap}
 .scale{position:absolute;right:78px;top:4px;height:292px;display:flex;flex-direction:column;justify-content:space-between;color:var(--muted);font-size:.7rem;text-align:right}
 .content{display:flex;flex-direction:column;justify-content:center}
+.visual-count{position:relative;width:230px;height:230px;display:grid;place-items:center;margin-bottom:18px}
+.ring{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg);filter:drop-shadow(0 0 14px color-mix(in srgb,var(--fill1) 35%,transparent))}
+.ring-bg,.ring-fill{fill:none;stroke-width:10}.ring-bg{stroke:rgba(255,255,255,.07)}
+.ring-fill{stroke:url(#ringGradient);stroke-linecap:round;stroke-dasharray:565.49;stroke-dashoffset:565.49;transition:stroke-dashoffset .65s cubic-bezier(.2,.8,.2,1)}
+.ring-center{text-align:center;z-index:1}.ring-caption{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-top:8px}
 .status-pill{align-self:flex-start;padding:8px 12px;border:1px solid color-mix(in srgb,var(--fill1) 55%,transparent);border-radius:999px;background:color-mix(in srgb,var(--fill1) 14%,transparent);color:var(--fill2);font-size:.8rem;font-weight:700;margin-bottom:20px;transition:.4s}
-.count-row{display:flex;align-items:baseline;gap:10px}
-.count{font-size:clamp(5rem,14vw,8rem);font-weight:800;letter-spacing:-.08em;line-height:.88;color:var(--fill2);transition:.35s}
-.target{color:var(--muted);font-size:1.25rem;font-weight:600}
+.count-row{display:flex;align-items:baseline;justify-content:center;gap:5px}
+.count{font-size:4.6rem;font-weight:800;letter-spacing:-.08em;line-height:.88;color:var(--fill2);transition:.35s}
+.target{color:var(--muted);font-size:1rem;font-weight:600}
 .message{font-size:1.15rem;font-weight:600;margin-top:18px}
 .remaining{color:var(--muted);font-size:.9rem;margin-top:7px}
 .progress-track{height:12px;margin:26px 0 10px;border-radius:20px;background:rgba(255,255,255,.07);overflow:hidden}
 .progress-fill{height:100%;width:0;border-radius:20px;background:linear-gradient(90deg,var(--fill1),var(--fill2));transition:width .6s cubic-bezier(.2,.8,.2,1)}
 .progress-labels{display:flex;justify-content:space-between;color:var(--muted);font-size:.78rem}
+.milestones{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:23px;position:relative}
+.milestones:before{content:"";position:absolute;top:18px;left:10%;right:10%;height:2px;background:rgba(255,255,255,.08)}
+.milestone{position:relative;text-align:center;color:var(--muted);font-size:.68rem;font-weight:650;transition:.35s}
+.milestone-dot{position:relative;z-index:1;width:36px;height:36px;margin:0 auto 7px;display:grid;place-items:center;border-radius:50%;border:2px solid rgba(255,255,255,.12);background:#0b1224;color:var(--muted);transition:.35s}
+.milestone.done{color:var(--text)}.milestone.done .milestone-dot{border-color:var(--fill2);background:var(--fill1);color:#fff;box-shadow:0 0 18px color-mix(in srgb,var(--fill1) 45%,transparent)}
+.flash{position:absolute;inset:0;opacity:0;pointer-events:none;background:radial-gradient(circle at 70% 45%,color-mix(in srgb,var(--fill2) 20%,transparent),transparent 45%);transition:opacity .25s}.flash.show{opacity:1}
+.plus-one{position:fixed;z-index:20;color:var(--fill2);font-size:1.4rem;font-weight:800;pointer-events:none;animation:floatUp .8s ease-out forwards;text-shadow:0 0 16px var(--fill1)}
+@keyframes floatUp{from{transform:translateY(0) scale(.8);opacity:0}35%{opacity:1}to{transform:translateY(-70px) scale(1.18);opacity:0}}
 .actions{display:grid;grid-template-columns:1fr 1.65fr;gap:12px;margin-top:30px}
 button{border:1px solid rgba(255,255,255,.11);border-radius:18px;padding:17px;color:white;font-size:1rem;font-weight:750;cursor:pointer;transition:.18s;background:rgba(255,255,255,.07)}
 button:hover{transform:translateY(-2px);filter:brightness(1.12)}
@@ -43,7 +56,7 @@ button:active{transform:scale(.98)}
 .celebration{position:fixed;inset:0;pointer-events:none;overflow:hidden}
 .confetti{position:absolute;top:-15px;width:9px;height:15px;border-radius:2px;animation:fall 2.3s linear forwards}
 @keyframes fall{to{transform:translate3d(var(--drift),105vh,0) rotate(760deg);opacity:.15}}
-@media(max-width:680px){body{padding:18px}.header{align-items:start;flex-direction:column}.panel{grid-template-columns:1fr;padding:24px;gap:12px}.thermometer-wrap{min-height:300px}.thermometer{transform:scale(.78);height:300px}.content{text-align:center}.status-pill{align-self:center}.count-row{justify-content:center}.actions{grid-template-columns:1fr 1.5fr}}
+@media(max-width:680px){body{padding:18px}.header{align-items:start;flex-direction:column}.panel{grid-template-columns:1fr;padding:24px;gap:4px}.thermometer-wrap{min-height:260px}.thermometer{transform:scale(.68);height:285px}.content{text-align:center}.visual-count{margin-inline:auto;width:210px;height:210px}.status-pill{align-self:center}.actions{grid-template-columns:1fr 1.5fr}.milestone{font-size:.6rem}}
 </style>
 </head>
 <body>
@@ -53,6 +66,7 @@ button:active{transform:scale(.98)}
     <div class="date" id="dateLabel"></div>
   </header>
   <section class="panel" id="panel">
+    <div class="flash" id="flash"></div>
     <div class="thermometer-wrap">
       <div class="thermometer">
         <div class="scale"><span>90</span><span>68</span><span>45</span><span>23</span><span>0</span></div>
@@ -62,14 +76,27 @@ button:active{transform:scale(.98)}
     </div>
     <div class="content">
       <div class="status-pill" id="statusPill">Ready to start</div>
-      <div class="count-row"><div class="count" id="count">0</div><div class="target">/ 90 calls</div></div>
+      <div class="visual-count">
+        <svg class="ring" viewBox="0 0 200 200" aria-hidden="true">
+          <defs><linearGradient id="ringGradient"><stop id="ringStop1" offset="0%"/><stop id="ringStop2" offset="100%"/></linearGradient></defs>
+          <circle class="ring-bg" cx="100" cy="100" r="90"/>
+          <circle class="ring-fill" id="ringFill" cx="100" cy="100" r="90"/>
+        </svg>
+        <div class="ring-center"><div class="count-row"><div class="count" id="count">0</div><div class="target">/90</div></div><div class="ring-caption">Calls today</div></div>
+      </div>
       <div class="message" id="message">Let's get the first call!</div>
       <div class="remaining" id="remaining">90 calls remaining</div>
       <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
       <div class="progress-labels"><span id="percent">0% complete</span><span id="pace">Starting line</span></div>
+      <div class="milestones">
+        <div class="milestone" data-at="23"><div class="milestone-dot">25%</div><span>Warm-up</span></div>
+        <div class="milestone" data-at="45"><div class="milestone-dot">50%</div><span>Halfway</span></div>
+        <div class="milestone" data-at="68"><div class="milestone-dot">75%</div><span>Strong</span></div>
+        <div class="milestone" data-at="90"><div class="milestone-dot">✓</div><span>Goal</span></div>
+      </div>
       <div class="actions">
         <button onclick="changeCount(-1)" aria-label="Remove one call">− Remove</button>
-        <button class="add" onclick="changeCount(1)">＋ Add Call</button>
+        <button class="add" onclick="changeCount(1,event)">＋ Add Call</button>
       </div>
     </div>
   </section>
@@ -112,21 +139,28 @@ function render(){
   document.getElementById("count").textContent=state.count;
   document.getElementById("mercury").style.height=`${visualPercent}%`;
   document.getElementById("progressFill").style.width=`${visualPercent}%`;
+  document.getElementById("ringFill").style.strokeDashoffset=565.49-(565.49*visualPercent/100);
+  document.getElementById("ringStop1").setAttribute("stop-color",fill1);
+  document.getElementById("ringStop2").setAttribute("stop-color",fill2);
   document.getElementById("percent").textContent=`${Math.round(rawPercent)}% complete`;
   document.getElementById("pace").textContent=rawPercent>=100?"Goal achieved":rawPercent>=75?"Final stretch":rawPercent>=50?"Past halfway":rawPercent>=25?"Gaining pace":"Starting line";
   const [message,remaining,status]=copyFor(state.count,rawPercent);
   document.getElementById("message").textContent=message;
   document.getElementById("remaining").textContent=remaining;
   document.getElementById("statusPill").textContent=status;
+  document.querySelectorAll(".milestone").forEach(item=>item.classList.toggle("done",state.count>=Number(item.dataset.at)));
   document.getElementById("dateLabel").textContent=new Date().toLocaleDateString("en-CA",{weekday:"long",month:"long",day:"numeric"});
 }
-function changeCount(amount){
+function changeCount(amount,event){
   const before=state.count;
   state.count=Math.max(0,state.count+amount);
+  if(amount>0){showPlus(event);pulsePanel();}
   if(before<GOAL&&state.count>=GOAL&&!state.celebrated){celebrate();state.celebrated=true;}
   if(state.count<GOAL)state.celebrated=false;
   save();render();
 }
+function pulsePanel(){const flash=document.getElementById("flash");flash.classList.add("show");setTimeout(()=>flash.classList.remove("show"),240);}
+function showPlus(event){const el=document.createElement("div");el.className="plus-one";el.textContent="+1";const x=event?.clientX||innerWidth*.72;const y=event?.clientY||innerHeight*.72;el.style.left=`${x-10}px`;el.style.top=`${y-25}px`;document.body.appendChild(el);setTimeout(()=>el.remove(),850);}
 function resetCount(){
   if(!confirm("Reset today's call count to zero?"))return;
   state={date:today(),count:0,celebrated:false};save();render();
